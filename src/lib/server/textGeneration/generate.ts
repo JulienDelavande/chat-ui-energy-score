@@ -127,6 +127,25 @@ Do not use prefixes such as Response: or Answer: when answering to the user.`,
 				interrupted,
 				webSources: output.webSources,
 			};
+
+			// simulation of metadata
+			const durationInSeconds = (new Date().getTime() - startTime.getTime()) / 1000;
+			const energyUsedwh = +(50 * (durationInSeconds / 3600)).toFixed(6); // 50W is a guess
+
+			yield {
+				type: MessageUpdateType.Metadata,
+				key: "energy_wh",
+				value: energyUsedwh,
+			};
+			yield {
+				type: MessageUpdateType.Metadata,
+				key: "duration_seconds",
+				value: durationInSeconds,
+			};
+
+			console.log('model', model);
+			console.log('output', output);
+
 			continue;
 		}
 

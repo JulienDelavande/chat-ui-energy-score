@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"  # adapt if using another dev server port
+    volumes:
+      - .:/app
+      - /app/node_modules  # pour éviter les conflits entre host et conteneur
+    working_dir: /app
+    user: "1000:1000"
+    tty: true
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:  
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

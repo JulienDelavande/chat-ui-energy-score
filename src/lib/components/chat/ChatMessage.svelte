@@ -150,6 +150,7 @@
 				class="mt-5 h-3 w-3 flex-none select-none rounded-full shadow-lg"
 			/>
 		{/if}
+		
 		<div
 			class="relative min-h-[calc(2rem+theme(spacing[3.5])*2)] min-w-[60px] break-words rounded-2xl border border-gray-100 bg-gradient-to-br from-gray-50 px-5 py-3.5 text-gray-600 prose-pre:my-2 dark:border-gray-800 dark:from-gray-800/40 dark:text-gray-300"
 		>
@@ -197,6 +198,25 @@
 					class="prose max-w-none dark:prose-invert max-sm:prose-sm prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h3:text-base prose-pre:bg-gray-800 dark:prose-pre:bg-gray-900"
 				>
 					<MarkdownRenderer content={message.content} sources={webSearchSources} />
+					{#if message.metadata?.energy_wh || message.metadata?.duration_seconds}
+					<div class="mt-2 flex gap-2">
+						{#if message.metadata?.energy_wh}
+							<div
+								class="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit"
+							>
+								◊ {message.metadata.energy_wh} Wh
+							</div>
+						{/if}
+						{#if message.metadata?.duration_seconds}
+							<div
+								class="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit"
+							>
+								{message.metadata.duration_seconds} sec
+							</div>
+						{/if}
+					</div>
+				{/if}
+				
 				</div>
 			</div>
 

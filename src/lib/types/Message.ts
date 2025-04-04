@@ -25,6 +25,9 @@ export type Message = Partial<Timestamps> & {
 
 	// goes one level deep
 	children?: Message["id"][];
+
+	// metadata
+	metadata?: Record<string, string | number>;
 };
 
 export type MessageFile = {

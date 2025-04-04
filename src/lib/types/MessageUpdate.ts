@@ -9,7 +9,8 @@ export type MessageUpdate =
 	| MessageStreamUpdate
 	| MessageFileUpdate
 	| MessageFinalAnswerUpdate
-	| MessageReasoningUpdate;
+	| MessageReasoningUpdate
+	| MessageMetadataUpdate;
 
 export enum MessageUpdateType {
 	Status = "status",
@@ -20,6 +21,7 @@ export enum MessageUpdateType {
 	File = "file",
 	FinalAnswer = "finalAnswer",
 	Reasoning = "reasoning",
+	Metadata = "metadata",
 }
 
 // Status
@@ -146,4 +148,10 @@ export interface MessageFinalAnswerUpdate {
 	text: string;
 	interrupted: boolean;
 	webSources?: { uri: string; title: string }[];
+}
+
+export interface MessageMetadataUpdate {
+	type: MessageUpdateType.Metadata;
+	key: string;
+	value: string | number;
 }
