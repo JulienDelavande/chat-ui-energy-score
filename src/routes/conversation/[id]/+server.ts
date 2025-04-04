@@ -402,6 +402,12 @@ export async function POST({ request, locals, params, getClientAddress }) {
 					];
 				}
 
+				// Add metadata
+				else if (event.type === MessageUpdateType.Metadata) {
+					messageToWriteTo.metadata ??= {};
+					messageToWriteTo.metadata[event.key] = event.value;
+				}
+
 				// Append to the persistent message updates if it's not a stream update
 				if (
 					event.type !== MessageUpdateType.Stream &&
@@ -416,6 +422,8 @@ export async function POST({ request, locals, params, getClientAddress }) {
 				) {
 					messageToWriteTo?.updates?.push(event);
 				}
+
+
 
 				// Avoid remote keylogging attack executed by watching packet lengths
 				// by padding the text with null chars to a fixed length
