@@ -24,7 +24,7 @@ RUN touch /app/.env.local
 RUN npm i --no-package-lock --no-save playwright@1.47.0
 USER root
 RUN apt-get update
-RUN apt-get install wget gnupg curl -y
+RUN apt-get install wget git gnupg curl -y
 RUN npx playwright install --with-deps chromium
 RUN chown -R 1000:1000 /home/user/.npm
 USER user
