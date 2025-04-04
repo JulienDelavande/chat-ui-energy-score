@@ -1,0 +1,9 @@
+title: Chat UI Energy Score
+emoji: ⚡
+colorFrom: indigo
+colorTo: pink
+pinned: false
+
+image: "docker"
+build:
+  dockerfile: Dockerfile
