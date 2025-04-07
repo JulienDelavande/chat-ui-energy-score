@@ -130,8 +130,10 @@ Do not use prefixes such as Response: or Answer: when answering to the user.`,
 
 			// simulation of metadata
 			const durationInSeconds = (new Date().getTime() - startTime.getTime()) / 1000;
-			const energyUsedwh = +(50 * (durationInSeconds / 3600)).toFixed(6); // 50W is a guess
 
+			// LLama 3.1 8B uses 17.38 Wh for 1000 queries according to https://huggingface.co/spaces/AIEnergyScore/Leaderboard 
+
+			const energyUsedwh = +(50 * (durationInSeconds / 3600)).toFixed(6); // Using P = 50W (H100 can use up to 700W)
 			yield {
 				type: MessageUpdateType.Metadata,
 				key: "energy_wh",
