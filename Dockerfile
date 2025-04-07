@@ -27,6 +27,8 @@ RUN apt-get update
 RUN apt-get install wget git gnupg curl -y
 RUN npx playwright install --with-deps chromium
 RUN chown -R 1000:1000 /home/user/.npm
+RUN mkdir -p /home/user/.cache/mongodb-binaries && \
+    chown -R 1000:1000 /home/user/.cache
 USER user
 
 COPY --chown=1000 .env /app/.env
