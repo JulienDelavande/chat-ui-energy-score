@@ -80,7 +80,7 @@ USER user
 FROM local_db_${INCLUDE_DB} AS final
 
 # build arg to determine if the database should be included
-ARG INCLUDE_DB=false
+ARG INCLUDE_DB=true
 ENV INCLUDE_DB=${INCLUDE_DB}
 
 # svelte requires APP_BASE at build time so it must be passed as a build arg
