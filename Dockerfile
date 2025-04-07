@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG INCLUDE_DB=false
+ARG INCLUDE_DB=true
 
 FROM node:20-slim AS base
 ENV PLAYWRIGHT_SKIP_BROWSER_GC=1
