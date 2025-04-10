@@ -151,7 +151,8 @@
 			) satisfies ToolFront[]
 	);
 
-	let showWebSearch = $derived(!assistant);
+	// let showWebSearch = $derived(!assistant);
+	let showWebSearch = $derived(false);
 	let showImageGen = $derived(modelHasTools && !assistant);
 	let showFileUpload = $derived((modelIsMultimodal || modelHasTools) && mimeTypes.length > 0);
 	let showExtraTools = $derived(modelHasTools && !assistant);
