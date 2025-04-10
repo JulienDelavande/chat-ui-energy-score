@@ -353,6 +353,17 @@
 	<div
 		class="dark:via-gray-80 pointer-events-none absolute inset-x-0 bottom-0 z-0 mx-auto flex w-full max-w-3xl flex-col items-center justify-center bg-gradient-to-t from-white via-white/80 to-white/0 px-3.5 py-4 dark:border-gray-800 dark:from-gray-900 dark:to-gray-900/0 max-md:border-t max-md:bg-white max-md:dark:bg-gray-900 sm:px-5 md:py-8 xl:max-w-4xl [&>*]:pointer-events-auto"
 	>
+		{#if messages.length > 0}
+			{@const totalEnergy = messages.reduce((total, msg) => total + (msg.metadata?.energy_wh || 0), 0)}
+			{#if totalEnergy > 0}
+				<div class="mb-4 flex items-center justify-center">
+					<div class="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded">
+						Total Energy: {totalEnergy.toFixed(6)} Wh (about {((totalEnergy / 19) * 100).toFixed(2)}% of charging a phone)
+					</div>
+				</div>
+			{/if}
+		{/if}
+
 		{#if sources?.length && !loading}
 			<div
 				in:fly|local={sources.length === 1 ? { y: -20, easing: cubicInOut } : undefined}
