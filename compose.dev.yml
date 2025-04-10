@@ -9,7 +9,6 @@ services:
       - .:/app
       - /app/node_modules  # pour éviter les conflits entre host et conteneur
     working_dir: /app
-    user: "1000:1000"
     tty: true
   mongo:
     image: mongo:7
