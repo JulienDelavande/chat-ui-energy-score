@@ -131,9 +131,12 @@ Do not use prefixes such as Response: or Answer: when answering to the user.`,
 			// simulation of metadata
 			const durationInSeconds = (new Date().getTime() - startTime.getTime()) / 1000;
 
-			// LLama 3.1 8B uses 17.38 Wh for 1000 queries according to https://huggingface.co/spaces/AIEnergyScore/Leaderboard 
+			// LLama 3.1 8B uses 17.38 Wh for 1000 queries according to https://huggingface.co/spaces/AIEnergyScore/Leaderboard
 
-			const energyUsedwh = +(50 * (durationInSeconds / 3600)).toFixed(6); // Using P = 50W (H100 can use up to 700W)
+			const energyUsedwh_sim = +(50 * (durationInSeconds / 3600)).toFixed(6); // Using P = 50W (H100 can use up to 700W)
+			console.log("energyUsedwh_sim", energyUsedwh_sim);
+			const energyUsedwh = (output.energy_consumption / 1000 / 3600).toFixed(6); // converting from mJ to Wh
+			console.log("energyUsedwh", energyUsedwh);
 			yield {
 				type: MessageUpdateType.Metadata,
 				key: "energy_wh",
@@ -144,9 +147,6 @@ Do not use prefixes such as Response: or Answer: when answering to the user.`,
 				key: "duration_seconds",
 				value: durationInSeconds,
 			};
-
-			console.log('model', model);
-			console.log('output', output);
 
 			continue;
 		}
