@@ -326,7 +326,17 @@ export async function POST({ request, locals, params, getClientAddress }) {
 	// update the conversation with the new messages
 	await collections.conversations.updateOne(
 		{ _id: convId },
-		{ $set: { messages: conv.messages, title: conv.title, updatedAt: new Date() } }
+		{
+			$set: {
+				messages: conv.messages,
+				title: conv.title,
+				updatedAt: new Date(),
+				energy_consumption: conv.messages.reduce((total, message) => {
+					const energy = message.metadata?.energy_wh;
+					return total + (typeof energy === "number" ? energy : 0);
+				}, 0),
+			},
+		}
 	);
 
 	let doneStreaming = false;
@@ -422,8 +432,6 @@ export async function POST({ request, locals, params, getClientAddress }) {
 				) {
 					messageToWriteTo?.updates?.push(event);
 				}
-
-
 
 				// Avoid remote keylogging attack executed by watching packet lengths
 				// by padding the text with null chars to a fixed length
