@@ -144,6 +144,7 @@ Do not use prefixes such as Response: or Answer: when answering to the user.`,
 				energyUsedwh = output.energy_consumption / 1000 / 3600; // converting from mJ to Wh
 			}
 			console.log("energyUsedwh", energyUsedwh);
+			console.log("model.name", model.name);
 			yield {
 				type: MessageUpdateType.Metadata,
 				key: "energy_wh",
@@ -153,6 +154,11 @@ Do not use prefixes such as Response: or Answer: when answering to the user.`,
 				type: MessageUpdateType.Metadata,
 				key: "duration_seconds",
 				value: durationInSeconds,
+			};
+			yield {
+				type: MessageUpdateType.Metadata,
+				key: "model_name",
+				value: model.name,
 			};
 
 			continue;

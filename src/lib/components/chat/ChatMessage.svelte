@@ -204,7 +204,8 @@
 							<div
 								class="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit"
 							>
-								{message.metadata.energy_wh.toFixed(4)} Wh
+								{message.metadata.energy_wh.toFixed(4)} Wh {#if message.metadata?.model_name !== "Qwen/Qwen2.5-VL-7B-Instruct"} (estimated)
+								{/if}
 							</div>
 						{/if}
 						{#if message.metadata?.duration_seconds}
