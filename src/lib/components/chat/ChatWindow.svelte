@@ -358,7 +358,7 @@
 			{#if totalEnergy > 0}
 				<div class="mb-4 flex items-center justify-center">
 					<div class="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded">
-						Total Energy: {totalEnergy.toFixed(6)} Wh (about {((totalEnergy / 19) * 100).toFixed(2)}% of charging a phone)
+						Total Energy: {totalEnergy.toFixed(4)} Wh (about {((totalEnergy / 19) * 100).toFixed(2)}% of charging a phone)
 					</div>
 				</div>
 			{/if}

@@ -133,15 +133,15 @@ Do not use prefixes such as Response: or Answer: when answering to the user.`,
 
 			// LLama 3.1 8B uses 17.38 Wh for 1000 queries according to https://huggingface.co/spaces/AIEnergyScore/Leaderboard
 
-			const energyUsedwh_sim = (50 * (durationInSeconds / 3600)).toFixed(6); // Using P = 50W (H100 can use up to 700W)
+			const energyUsedwh_sim = 50 * (durationInSeconds / 3600); // Using P = 50W (H100 can use up to 700W)
 			console.log("energyUsedwh_sim", energyUsedwh_sim);
-			let energyUsedwh = "0";
+			let energyUsedwh = 0;
 			console.log("output", output);
 			if (output.energy_consumption === undefined) {
-				energyUsedwh = (energyUsedwh_sim / 1000).toFixed(6); // converting from mJ to Wh
+				energyUsedwh = energyUsedwh_sim;
 			} else {
 				// if the model has energy consumption, we use it instead
-				energyUsedwh = (output.energy_consumption / 1000 / 3600).toFixed(6); // converting from mJ to Wh
+				energyUsedwh = output.energy_consumption / 1000 / 3600; // converting from mJ to Wh
 			}
 			console.log("energyUsedwh", energyUsedwh);
 			yield {
