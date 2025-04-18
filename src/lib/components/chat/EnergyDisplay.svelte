@@ -6,8 +6,8 @@
 	let showJoules = false;
 	let showTooltip = false;
 
-	const isEstimated = !(typeof energyWh === 'number' && energyWh !== 0);
-	const energyToDisplay = isEstimated ? energyWhSim : energyWh;
+	$: isEstimated = !(typeof energyWh === 'number' && energyWh !== 0);
+	$: energyToDisplay = isEstimated ? energyWhSim : energyWh;
 
 	function convertToJoules(wh: number): number {
 		return wh * 3600;
