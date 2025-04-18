@@ -1,13 +1,11 @@
 <script lang="ts">
-	export let energyWh: number | undefined = undefined;
-	export let energyWhSim: number | undefined = undefined;
-	export let durationSeconds: number | undefined = undefined;
+	let { energyWh, energyWhSim, durationSeconds } = $props();
 
-	let showJoules = false;
-	let showTooltip = false;
+	let showJoules = $state(false);
+	let showTooltip = $state(false);
 
-	$: isEstimated = !(typeof energyWh === 'number' && energyWh !== 0);
-	$: energyToDisplay = isEstimated ? energyWhSim : energyWh;
+    const isEstimated = $derived(!(typeof energyWh === 'number' && energyWh !== 0));
+    const energyToDisplay = $derived(isEstimated ? energyWhSim : energyWh);
 
 	function convertToJoules(wh: number): number {
 		return wh * 3600;
