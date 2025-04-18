@@ -328,6 +328,15 @@
 					if (update.subtype === MessageReasoningUpdateType.Stream) {
 						messageToWriteTo.reasoning += update.token;
 					}
+					
+					} else if (update.type === MessageUpdateType.Metadata) {
+						if (!messageToWriteTo.metadata) messageToWriteTo.metadata = {};
+						messageToWriteTo.metadata = {
+							...messageToWriteTo.metadata,
+							[update.key]: update.value,
+						};
+
+					
 				}
 			}
 		} catch (err) {

@@ -128,38 +128,15 @@ Do not use prefixes such as Response: or Answer: when answering to the user.`,
 				webSources: output.webSources,
 			};
 
-			// simulation of metadata
-			const durationInSeconds = (new Date().getTime() - startTime.getTime()) / 1000;
-
-			// LLama 3.1 8B uses 17.38 Wh for 1000 queries according to https://huggingface.co/spaces/AIEnergyScore/Leaderboard
-
-			const energyUsedwh_sim = 50 * (durationInSeconds / 3600); // Using P = 50W (H100 can use up to 700W)
-			console.log("energyUsedwh_sim", energyUsedwh_sim);
-			let energyUsedwh = 0;
-			console.log("output", output);
-			if (output.energy_consumption === undefined) {
-				energyUsedwh = energyUsedwh_sim;
-			} else {
-				// if the model has energy consumption, we use it instead
-				energyUsedwh = output.energy_consumption / 1000 / 3600; // converting from mJ to Wh
+			if (output.energy_consumption !== undefined) {
+				const energyUsedwh = output.energy_consumption / 1000 / 3600; // converting from mJ to Wh;
+				console.log("energyUsedwh", energyUsedwh);
+				yield {
+					type: MessageUpdateType.Metadata,
+					key: "energy_wh",
+					value: energyUsedwh,
+				};
 			}
-			console.log("energyUsedwh", energyUsedwh);
-			console.log("model.name", model.name);
-			yield {
-				type: MessageUpdateType.Metadata,
-				key: "energy_wh",
-				value: energyUsedwh,
-			};
-			yield {
-				type: MessageUpdateType.Metadata,
-				key: "duration_seconds",
-				value: durationInSeconds,
-			};
-			yield {
-				type: MessageUpdateType.Metadata,
-				key: "model_name",
-				value: model.name,
-			};
 
 			continue;
 		}
@@ -220,6 +197,24 @@ Do not use prefixes such as Response: or Answer: when answering to the user.`,
 			};
 		} else {
 			yield { type: MessageUpdateType.Stream, token: output.token.text };
+		}
+
+		if (!output.token.special) {
+			// simulation of metadata
+			const durationInSeconds = (new Date().getTime() - startTime.getTime()) / 1000;
+			const energyUsedwh_sim = 55 * (durationInSeconds / 3600); // Using P = 50W (H100 can use up to 700W)
+			console.log("energyUsedwh_sim", energyUsedwh_sim);
+			console.log("model.name", model.name);
+			yield {
+				type: MessageUpdateType.Metadata,
+				key: "energy_wh_sim",
+				value: energyUsedwh_sim,
+			};
+			yield {
+				type: MessageUpdateType.Metadata,
+				key: "duration_seconds",
+				value: durationInSeconds,
+			};
 		}
 
 		// abort check

@@ -28,6 +28,7 @@
 	import OpenReasoningResults from "./OpenReasoningResults.svelte";
 	import Alternatives from "./Alternatives.svelte";
 	import Vote from "./Vote.svelte";
+	import EnergyDisplay from './EnergyDisplay.svelte';
 
 	interface Props {
 		message: Message;
@@ -198,24 +199,13 @@
 					class="prose max-w-none dark:prose-invert max-sm:prose-sm prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h3:text-base prose-pre:bg-gray-800 dark:prose-pre:bg-gray-900"
 				>
 					<MarkdownRenderer content={message.content} sources={webSearchSources} />
-					{#if message.metadata?.energy_wh || message.metadata?.duration_seconds}
-					<div class="mt-2 flex gap-2">
-						{#if message.metadata?.energy_wh}
-							<div
-								class="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit"
-							>
-								{message.metadata.energy_wh.toFixed(4)} Wh {#if message.metadata?.model_name !== "Qwen/Qwen2.5-VL-7B-Instruct"} (estimated)
-								{/if}
-							</div>
-						{/if}
-						{#if message.metadata?.duration_seconds}
-							<div
-								class="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit"
-							>
-								{message.metadata.duration_seconds} sec
-							</div>
-						{/if}
-					</div>
+					{#if message.metadata?.duration_seconds || message.metadata?.energy_wh_sim}
+					<EnergyDisplay
+						energyWh={message.metadata?.energy_wh}
+						energyWhSim={message.metadata?.energy_wh_sim}
+						durationSeconds={message.metadata?.duration_seconds}
+					/>
+
 				{/if}
 				
 				</div>
