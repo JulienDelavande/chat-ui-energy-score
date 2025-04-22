@@ -10,6 +10,20 @@
 	function convertToJoules(wh: number): number {
 		return wh * 3600;
 	}
+
+    let equivalentIndex = $state(0);
+
+    const equivalents = [
+    (wh: number) => `≈ ${((wh / 19) * 100).toFixed(2)}% of a phone charge (19Wh)`,
+    (wh: number) => `≈ ${(wh / 0.04).toFixed(2)} minutes of LED bulb (10W)`, // 0.04Wh/min
+    (wh: number) => `≈ ${(wh / 1.5).toFixed(2)} seconds of microwave (1000W)`,
+    (wh: number) => `≈ ${(wh / 0.2).toFixed(2)} pedal strokes on an e-bike (200W)`,
+    (wh: number) => `≈ ${(wh / 12).toFixed(2)} seconds of toaster use (1kW)`
+    ];
+
+    function cycleEquivalent() {
+        equivalentIndex = (equivalentIndex + 1) % equivalents.length;
+    }
 </script>
 
 <style>
@@ -22,20 +36,22 @@
 		transform: scale(1.05);
 	}
 	.tooltip {
-		position: absolute;
-		top: 100%;
-		left: 0;
-		z-index: 10;
-		margin-top: 0.25rem;
-		padding: 0.5rem;
-		background-color: #f3f4f6;
-		color: #1f2937;
-		font-size: 0.75rem;
-		border-radius: 0.25rem;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-		width: max-content;
-		max-width: 400px;
-	}
+    position: absolute;
+    top: 100%; /* Positionne au-dessus de l’élément parent */
+    margin-bottom: 0.5rem; /* Équivalent de mb-2 */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f3f4f6; /* bg-gray-200 */
+    color: #1f2937; /* text-gray-800 */
+    font-size: 0.75rem; /* text-xs */
+    padding: 0.5rem 0.75rem; /* px-3 py-2 */
+    border-radius: 0.25rem; /* rounded */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -4px rgba(0, 0, 0, 0.1); /* shadow-lg */
+    z-index: 10;
+    width: 16rem; /* w-64 */
+    text-align: center;
+    }
     .info-button {
         transition: transform 0.2s ease;
         cursor: pointer;
@@ -49,24 +65,16 @@
 {#if durationSeconds || energyToDisplay}
 	<div class="mt-2 flex gap-2 items-center relative">
 
-        <!-- Info button -->
-    <div
-        class="relative"
-        on:mouseover={() => (showTooltip = true)}
-        on:mouseleave={() => (showTooltip = false)}>
-        <button
-            class="text-xs text-gray-500 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full info-button">
-            ⓘ
-        </button>
-    </div>
+        
         
 
 		<!-- Energy Box -->
 		{#if energyToDisplay}
 			<div
-				class="text-xs text-gray-500 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit energy-box"
+				class="text-xs text-gray-600 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit energy-box"
 				on:click={() => (showJoules = !showJoules)}
 			>
+            Energy:
 				{#if showJoules}
 					{convertToJoules(energyToDisplay).toFixed(2)} J {isEstimated ? "(estimated)" : ""}
 				{:else}
@@ -75,26 +83,44 @@
 			</div>
 		{/if}
 
+        <!-- Equivalent -->
+        <div
+            class="text-xs text-gray-600 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit cursor-pointer transform hover:scale-105 transition duration-150 ease-in-out"
+            on:click={cycleEquivalent}
+        >
+            {equivalents[equivalentIndex](energyToDisplay)}
+        </div>
+
 		
         <!-- Duration -->
 		{#if durationSeconds}
         <div
-            class="text-xs text-gray-500 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit"
-        >
-            {durationSeconds} sec
+            class="text-xs text-gray-600 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit"
+        > 
+            Duration: {durationSeconds.toFixed(3)} sec
         </div>
     {/if}
 		
-
+        <!-- Info button -->
+        <div
+        class="relative"
+        on:mouseover={() => (showTooltip = true)}
+        on:mouseleave={() => (showTooltip = false)}>
+            <button
+                class="text-xs text-gray-600 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full info-button">
+                ⓘ
+            </button>
 		<!-- Tooltip -->
 		{#if showTooltip}
 			<div class="tooltip">
 				{#if isEstimated}
-					Estimated energy consumption based on the average GPU power and inference duration. Use Qwen/Qwen/Qwen2.5-VL-7B-Instruct model for exact results.
+					Estimated energy consumption based on the average GPU power and inference duration for this message. Use Qwen/Qwen/Qwen2.5-VL-7B-Instruct model for exact results.
 				{:else}
-					Energy consumption measured directly on the GPU during inference.
+					Energy consumption measured directly on the GPU during inference for this message.
 				{/if}
 			</div>
 		{/if}
+        </div>
+        
 	</div>
 {/if}
