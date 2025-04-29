@@ -6,6 +6,7 @@
 	import IconInternet from "$lib/components/icons/IconInternet.svelte";
 	import IconImageGen from "$lib/components/icons/IconImageGen.svelte";
 	import IconPaperclip from "$lib/components/icons/IconPaperclip.svelte";
+	import IconThinking from "$lib/components/icons/IconThinking.svelte";
 	import { useSettingsStore } from "$lib/stores/settings";
 	import { webSearchParameters } from "$lib/stores/webSearchParameters";
 	import {
@@ -37,6 +38,7 @@
 		modelIsMultimodal?: boolean;
 		children?: import("svelte").Snippet;
 		onPaste?: (e: ClipboardEvent) => void;
+		showThinking?: boolean;
 	}
 
 	let {
@@ -51,6 +53,7 @@
 		modelIsMultimodal = false,
 		children,
 		onPaste,
+		showThinking = false,
 	}: Props = $props();
 
 	const onFileChange = async (e: Event) => {
@@ -68,7 +71,7 @@
 	let textareaElement: HTMLTextAreaElement | undefined = $state();
 	let isCompositionOn = $state(false);
 
-	const dispatch = createEventDispatcher<{ submit: void }>();
+	const dispatch = createEventDispatcher<{ submit: { text: string } }>();
 
 	onMount(() => {
 		if (!isVirtualKeyboard()) {
@@ -121,8 +124,11 @@
 			!isVirtualKeyboard() &&
 			value.trim() !== ""
 		) {
-			event.preventDefault();
-			dispatch("submit");
+			event.preventDefault();	
+            const textToSend = thinkingIsOn
+               ? `${value.trim()} /think`
+               : `${value.trim()} /no_think`;
+	        dispatch("submit", { text: textToSend });
 		}
 	}
 
@@ -158,6 +164,9 @@
 	let showExtraTools = $derived(modelHasTools && !assistant);
 
 	let showNoTools = $derived(!showWebSearch && !showImageGen && !showFileUpload && !showExtraTools);
+
+	let thinkingIsOn = $state(false);
+
 </script>
 
 <div class="flex min-h-full flex-1 flex-col" onpaste={onPaste}>
@@ -224,6 +233,33 @@
 						{#if webSearchIsOn}
 							Search
 						{/if}
+					</button>
+				</HoverTooltip>
+			{/if}
+			{#if showThinking}
+				<HoverTooltip
+					label="Thinking"
+					position="top"
+					TooltipClassNames="text-xs !text-left !w-auto whitespace-nowrap !py-1 !mb-0 max-sm:hidden {thinkingIsOn
+						? 'hidden'
+						: ''}"
+				>
+					<button
+						class="base-tool"
+						class:active-tool={thinkingIsOn}
+						disabled={loading}
+						onclick={(e) => {
+							e.preventDefault();
+							thinkingIsOn = !thinkingIsOn;
+						}}
+					>
+					<IconThinking classNames="text-xl" />
+					{#if thinkingIsOn}
+							Thinking
+						{:else}
+							Not Thinking
+						{/if}
+					
 					</button>
 				</HoverTooltip>
 			{/if}

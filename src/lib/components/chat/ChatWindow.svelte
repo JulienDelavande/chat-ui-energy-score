@@ -73,6 +73,9 @@
 	let isSharedRecently = $state(false);
 	let editMsdgId: Message["id"] | null = $state(null);
 	let pastedLongContent = $state(false);
+	let showThinking = $derived(
+		currentModel.name === "Qwen/Qwen3_8B"
+		);
 
 	beforeNavigate(() => {
 		if (page.params.id) {
@@ -88,11 +91,19 @@
 		continue: { id: Message["id"] };
 	}>();
 
-	const handleSubmit = () => {
+	// const handleSubmit = () => {
+	// 	if (loading) return;
+	// 	dispatch("message", message);
+	// 	message = "";
+	// };
+
+	function handleSubmit(ev?: CustomEvent<{ text: string }>) {
 		if (loading) return;
-		dispatch("message", message);
+
+		const content = ev?.detail?.text ?? message;
+		dispatch("message", content);
 		message = "";
-	};
+	}
 
 	let lastTarget: EventTarget | null = null;
 
@@ -438,6 +449,7 @@
 								disabled={isReadOnly || lastIsError}
 								modelHasTools={currentModel.tools}
 								modelIsMultimodal={currentModel.multimodal}
+								showThinking={showThinking}
 							/>
 						{/if}
 
