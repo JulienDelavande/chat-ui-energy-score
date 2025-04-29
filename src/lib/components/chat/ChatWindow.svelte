@@ -76,6 +76,7 @@
 	let showThinking = $derived(
 		currentModel.name === "Qwen/Qwen3_8B"
 		);
+	let thinkingIsOn = $state(false);
 
 	beforeNavigate(() => {
 		if (page.params.id) {
@@ -450,6 +451,7 @@
 								modelHasTools={currentModel.tools}
 								modelIsMultimodal={currentModel.multimodal}
 								showThinking={showThinking}
+								thinkingIsOn={thinkingIsOn}
 							/>
 						{/if}
 

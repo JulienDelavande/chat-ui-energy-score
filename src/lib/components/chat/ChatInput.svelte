@@ -39,6 +39,7 @@
 		children?: import("svelte").Snippet;
 		onPaste?: (e: ClipboardEvent) => void;
 		showThinking?: boolean;
+		thinkingIsOn?: boolean;
 	}
 
 	let {
@@ -54,6 +55,7 @@
 		children,
 		onPaste,
 		showThinking = false,
+		thinkingIsOn = false,
 	}: Props = $props();
 
 	const onFileChange = async (e: Event) => {
@@ -164,8 +166,6 @@
 	let showExtraTools = $derived(modelHasTools && !assistant);
 
 	let showNoTools = $derived(!showWebSearch && !showImageGen && !showFileUpload && !showExtraTools);
-
-	let thinkingIsOn = $state(false);
 
 </script>
 
