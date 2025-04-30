@@ -1,11 +1,9 @@
 <script lang="ts">
-	let { energyWh, energyWhSim, durationSeconds } = $props();
+	let { energyWh, isEstimated, durationSeconds, isTotal } = $props();
 
 	let showJoules = $state(false);
 	let showTooltip = $state(false);
 
-    const isEstimated = $derived(!(typeof energyWh === 'number' && energyWh !== 0));
-    const energyToDisplay = $derived(isEstimated ? energyWhSim : energyWh);
 
 	function convertToJoules(wh: number): number {
 		return wh * 3600;
@@ -62,34 +60,38 @@
     }
 </style>
 
-{#if durationSeconds || energyToDisplay}
+{#if durationSeconds || energyWh}
 	<div class="mt-2 flex gap-2 items-center relative">
 
-        
-        
-
 		<!-- Energy Box -->
-		{#if energyToDisplay}
-			<div
+		{#if energyWh}
+			<button
+                tabindex="0"
+                aria-label="Energy consumption"
 				class="text-xs text-gray-600 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit energy-box"
-				on:click={() => (showJoules = !showJoules)}
+				onclick={() => (showJoules = !showJoules)}
 			>
-            Energy:
+            <span class="hidden sm:inline">
+                {isTotal ? "Total " : ""}
+                Energy:
+            </span>
 				{#if showJoules}
-					{convertToJoules(energyToDisplay).toFixed(2)} J {isEstimated ? "(estimated)" : ""}
+					{convertToJoules(energyWh).toFixed(2)} J {isEstimated ? "(estimated)" : ""}
 				{:else}
-					{energyToDisplay.toFixed(4)} Wh {isEstimated ? "(estimated)" : ""}
+					{energyWh.toFixed(4)} Wh {isEstimated ? "(estimated)" : ""}
 				{/if}
-			</div>
+            </button>
 		{/if}
 
         <!-- Equivalent -->
-        <div
+        <button
+            tabindex="0"
+            aria-label="Energy consumption equivalent"
             class="text-xs text-gray-600 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit cursor-pointer transform hover:scale-105 transition duration-150 ease-in-out"
-            on:click={cycleEquivalent}
+            onclick={cycleEquivalent}
         >
-            {equivalents[equivalentIndex](energyToDisplay)}
-        </div>
+            {equivalents[equivalentIndex](energyWh)}
+        </button>
 
 		
         <!-- Duration -->
@@ -97,19 +99,27 @@
         <div
             class="text-xs text-gray-600 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-fit"
         > 
-            Duration: {durationSeconds.toFixed(3)} sec
+        <span class="hidden sm:inline">
+            {isTotal ? "Total " : ""}
+            Duration:
+        </span>
+            {durationSeconds.toFixed(3)} s
         </div>
     {/if}
 		
         <!-- Info button -->
-        <div
+         <span class="hidden sm:inline"> 
+        <button
+        tabindex="0"
+        aria-label="Energy consumption info"
         class="relative"
-        on:mouseover={() => (showTooltip = true)}
-        on:mouseleave={() => (showTooltip = false)}>
-            <button
+        onmouseover={() => (showTooltip = true)}
+        onmouseleave={() => (showTooltip = false)}
+        onfocus={() => (showTooltip = true)}>
+            <div
                 class="text-xs text-gray-600 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full info-button">
                 ⓘ
-            </button>
+         </div>
 		<!-- Tooltip -->
 		{#if showTooltip}
 			<div class="tooltip">
@@ -120,7 +130,8 @@
 				{/if}
 			</div>
 		{/if}
-        </div>
+        </button>
+    </span>
         
 	</div>
 {/if}

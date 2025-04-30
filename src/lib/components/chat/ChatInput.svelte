@@ -127,9 +127,16 @@
 			value.trim() !== ""
 		) {
 			event.preventDefault();	
-            const textToSend = thinkingIsOn
-               ? `${value.trim()} /think`
-               : `${value.trim()} /no_think`;
+            let textToSend;
+			if (showThinking) {
+				if (thinkingIsOn) {
+					textToSend = `${value.trim()} /think`;
+				} else {
+					textToSend = `${value.trim()} /no_think`;
+				}
+				} else {
+				textToSend = `${value.trim()}`;
+			}
 	        dispatch("submit", { text: textToSend });
 		}
 	}
@@ -160,7 +167,6 @@
 	);
 
 	let showWebSearch = $derived(!assistant);
-	//let showWebSearch = $derived(false);
 	let showImageGen = $derived(modelHasTools && !assistant);
 	let showFileUpload = $derived((modelIsMultimodal || modelHasTools) && mimeTypes.length > 0);
 	let showExtraTools = $derived(modelHasTools && !assistant);

@@ -200,10 +200,12 @@
 				>
 					<MarkdownRenderer content={message.content} sources={webSearchSources} />
 					{#if message.metadata?.duration_seconds || message.metadata?.energy_wh_sim}
+					
 					<EnergyDisplay
-						energyWh={message.metadata?.energy_wh}
-						energyWhSim={message.metadata?.energy_wh_sim}
+						energyWh={message.metadata?.energy_wh || message.metadata?.energy_wh_sim}
+						isEstimated={message.metadata?.energy_wh === undefined}
 						durationSeconds={message.metadata?.duration_seconds}
+						isTotal={false}
 					/>
 
 				{/if}

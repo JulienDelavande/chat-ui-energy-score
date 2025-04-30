@@ -32,7 +32,7 @@
 	import UploadedFile from "./UploadedFile.svelte";
 	import { useSettingsStore } from "$lib/stores/settings";
 	import ModelSwitch from "./ModelSwitch.svelte";
-	import EnergySummary from "./EnergySummary.svelte";
+	import EnergyDisplay from "./EnergyDisplay.svelte";
 
 	import { fly } from "svelte/transition";
 	import { cubicInOut } from "svelte/easing";
@@ -77,6 +77,24 @@
 		currentModel.name === "Qwen/Qwen3_8B"
 		);
 	let thinkingIsOn = $state(false);
+
+	// Energy display
+	let totalEnergyWh = $derived(
+		messages.reduce(
+			(total: number, msg: any) => total + (msg.metadata?.energy_wh || msg.metadata?.energy_wh_sim || 0),
+			0
+		)
+	);
+	let isEstimated = $derived(
+		messages.some((msg: any) => msg.metadata?.energy_wh === undefined && msg.from === "assistant")
+	);
+	console.log("messages", messages);	
+	let totalDurationSeconds = $derived(
+		messages.reduce(
+			(total: number, msg: any) => total + (msg.metadata?.duration_seconds || 0),
+			0
+		)
+	);
 
 	beforeNavigate(() => {
 		if (page.params.id) {
@@ -386,11 +404,18 @@
 		<div
 	class="dark:via-gray-80 pointer-events-none absolute inset-x-0 bottom-0 z-0 mx-auto flex w-full max-w-3xl flex-col items-center justify-center bg-gradient-to-t from-white via-white/80 to-white/0 px-3.5 py-4 dark:border-gray-800 dark:from-gray-900 dark:to-gray-900/0 max-md:border-t max-md:bg-white max-md:dark:bg-gray-900 sm:px-5 md:py-8 xl:max-w-4xl [&>*]:pointer-events-auto"
 		>
-		<EnergySummary {messages} />
-	
-	
-		<div class="w-full">
+		
+		<div class="w-full">	
+			
 			<div class="flex w-full *:mb-3">
+				
+				<!-- <EnergySummary {messages} /> -->
+				<EnergyDisplay
+				energyWh={totalEnergyWh}
+				isEstimated={isEstimated}
+				durationSeconds={totalDurationSeconds}
+				isTotal={true}/>
+
 				{#if loading}
 					<StopGeneratingBtn classNames="ml-auto" onClick={() => dispatch("stop")} />
 				{:else if lastIsError}
